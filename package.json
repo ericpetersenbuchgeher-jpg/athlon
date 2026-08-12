@@ -1,0 +1,35 @@
+{
+  "name": "athlon",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Athlon — la piattaforma dello sport italiano: crea la tua ASD, trova la tua squadra, trova sponsor. Landing 3D scroll-driven (WebGPU/TSL/R3F v9 + GSAP + Lenis) e app in React + Emotion.",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -p tsconfig.json && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-router-dom": "^7.1.0",
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.0",
+    "three": "^0.171.0",
+    "@react-three/fiber": "^9.0.0",
+    "@react-three/drei": "^10.0.0",
+    "gsap": "^3.13.0",
+    "@gsap/react": "^2.1.0",
+    "lenis": "^1.3.0",
+    "motion": "^12.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "@types/three": "^0.171.0",
+    "@vitejs/plugin-react": "^4.3.0",
+    "typescript": "^5.6.0",
+    "vite": "^6.0.0"
+  }
+}
