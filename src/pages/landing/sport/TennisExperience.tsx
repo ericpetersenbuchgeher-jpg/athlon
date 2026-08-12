@@ -198,7 +198,7 @@ export function TennisExperience({ onExit }: { onExit: () => void }) {
           <Section>
             <Container>
               <motion.div {...reveal}>
-                <Eyebrow style={{ color: '#c8ff4d' }}>Il tennis su Athlon</Eyebrow>
+                <Eyebrow style={{ color: '#c8ff4d' }}>Il tennis su Vivaio</Eyebrow>
                 <H2>Dal campo alla scrivania, anche per il tennis</H2>
               </motion.div>
               <Cols>

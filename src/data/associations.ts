@@ -101,7 +101,7 @@ export const associations: Association[] = [
     balanceEur: 0,
     documents: [
       { name: 'Atto costitutivo', status: 'da caricare' },
-      { name: 'Statuto', status: 'da caricare', hint: 'Usa il modello guidato di Athlon' },
+      { name: 'Statuto', status: 'da caricare', hint: 'Usa il modello guidato di Vivaio' },
       { name: 'Codice fiscale ASD', status: 'da caricare' },
       { name: 'Affiliazione ente', status: 'da caricare' },
     ],

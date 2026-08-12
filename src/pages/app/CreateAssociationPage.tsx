@@ -28,9 +28,9 @@ import { useAuth } from '../../auth/AuthContext'
 
 const STEPS = ['Anagrafica', 'Sport & Ente', 'Documenti & Statuto', 'Riepilogo'] as const
 
-// The bureaucratic adempimenti a founder can hand off to Athlon's guided flow.
+// The bureaucratic adempimenti a founder can hand off to Vivaio's guided flow.
 const DOC_OPTIONS: { id: string; label: string; note: string }[] = [
-  { id: 'modello', label: 'Userò il modello guidato di statuto di Athlon', note: 'Statuto conforme al Codice del Terzo Settore' },
+  { id: 'modello', label: 'Userò il modello guidato di statuto di Vivaio', note: 'Statuto conforme al Codice del Terzo Settore' },
   { id: 'atto', label: 'Atto costitutivo firmato dai soci fondatori', note: 'Minimo 3 soci, verbale di assemblea' },
   { id: 'cf', label: 'Richiesta codice fiscale (Agenzia delle Entrate)', note: 'Modello AA5/6, gratuito' },
   { id: 'runts', label: 'Iscrizione al RUNTS', note: 'Registro Unico Nazionale del Terzo Settore' },
@@ -379,7 +379,7 @@ export function CreateAssociationPage() {
             <Lead>
               <h2>Documenti & Statuto</h2>
               <p>
-                Gli adempimenti burocratici per far nascere l'A.S.D. Athlon ti
+                Gli adempimenti burocratici per far nascere l'A.S.D. Vivaio ti
                 accompagna in ognuno di questi passaggi.
               </p>
             </Lead>
@@ -397,7 +397,7 @@ export function CreateAssociationPage() {
                       registrati all'Agenzia delle Entrate. Con l'iscrizione al{' '}
                       <strong>RUNTS</strong> (Registro Unico Nazionale del Terzo
                       Settore) l'associazione ottiene personalità giuridica e i
-                      benefici fiscali. Athlon genera lo statuto dal modello
+                      benefici fiscali. Vivaio genera lo statuto dal modello
                       guidato e tiene traccia delle scadenze.
                     </Muted>
                   </div>
@@ -406,7 +406,7 @@ export function CreateAssociationPage() {
 
               <Field
                 label="Adempimenti"
-                hint="Seleziona quelli che vuoi gestire con Athlon"
+                hint="Seleziona quelli che vuoi gestire con Vivaio"
               >
                 <Row gap={2} wrap>
                   {DOC_OPTIONS.map((d) => (
@@ -485,7 +485,7 @@ export function CreateAssociationPage() {
                 ) : (
                   <EmptyState icon="file" title="Nessun adempimento selezionato">
                     Torna al passo Documenti & Statuto per scegliere cosa gestire con
-                    Athlon.
+                    Vivaio.
                   </EmptyState>
                 )}
               </div>

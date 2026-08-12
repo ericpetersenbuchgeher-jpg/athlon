@@ -1,4 +1,4 @@
-// Design tokens for Athlon — dark, cinematic, editorial (from the reference reels),
+// Design tokens for Vivaio — dark, cinematic, editorial (from the reference reels),
 // declined onto Italian sport. Azure = identity (the "Azzurri" nod), orange = energy/action.
 // One source of truth; consumed via Emotion's ThemeProvider (see GlobalStyles + main.tsx).
 

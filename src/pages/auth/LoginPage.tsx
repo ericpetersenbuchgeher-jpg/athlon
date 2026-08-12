@@ -63,7 +63,7 @@ export function LoginPage() {
   return (
     <AuthShell>
       <Title>Bentornato 👋</Title>
-      <Sub>Accedi per continuare sul tuo profilo Athlon.</Sub>
+      <Sub>Accedi per continuare sul tuo profilo Vivaio.</Sub>
 
       <Form onSubmit={onSubmit}>
         <Field label="Email" htmlFor="email">

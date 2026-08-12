@@ -1,4 +1,4 @@
-// Domain model for Athlon. Demo data only (front-end prototype), but shaped like the real thing
+// Domain model for Vivaio. Demo data only (front-end prototype), but shaped like the real thing
 // so wiring a backend later is a drop-in.
 
 export type SportId =

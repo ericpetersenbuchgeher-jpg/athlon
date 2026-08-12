@@ -190,7 +190,7 @@ export function Hero({ reduced }: { reduced: boolean }) {
         >
           <Container>
             <SrHeading>
-              Athlon — la piattaforma dello sport italiano: crea la tua società, trova la tua
+              Vivaio — la piattaforma dello sport italiano: crea la tua società, trova la tua
               squadra, trova sponsor.
             </SrHeading>
             <motion.div {...anim(0)}>
