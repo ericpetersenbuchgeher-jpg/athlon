@@ -14,7 +14,7 @@ createRoot(document.getElementById('root')!).render(
     <ThemeProvider theme={theme}>
       <GlobalStyles />
       <AuthProvider>
-        <BrowserRouter>
+        <BrowserRouter basename={import.meta.env.BASE_URL}>
           <DebugBoundary>
             <App />
           </DebugBoundary>
