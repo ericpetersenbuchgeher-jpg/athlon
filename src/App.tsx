@@ -4,6 +4,7 @@ import { Route, Routes, useLocation } from 'react-router-dom'
 import { SceneProvider } from './canvas/SceneContext'
 import { PersistentScene } from './canvas/PersistentScene'
 import { LandingPage } from './pages/landing/LandingPage'
+import { SportPage } from './pages/landing/SportPage'
 import { LoginPage } from './pages/auth/LoginPage'
 import { RegisterPage } from './pages/auth/RegisterPage'
 
@@ -40,6 +41,7 @@ export default function App() {
       <Routes>
         {/* public */}
         <Route path="/" element={<LandingPage />} />
+        <Route path="/sport" element={<SportPage />} />
         <Route path="/accedi" element={<LoginPage />} />
         <Route path="/registrati" element={<RegisterPage />} />
 

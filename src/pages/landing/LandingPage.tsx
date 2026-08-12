@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { SmoothScroll } from '../../scroll/SmoothScroll'
 import { ScrollProgressDriver } from '../../scroll/ScrollProgressDriver'
 import { useReducedMotion } from '../../hooks/useReducedMotion'
@@ -7,19 +6,13 @@ import { PublicNav } from '../../components/layout/PublicNav'
 import { Footer } from '../../components/layout/Footer'
 import { Hero } from './Hero'
 import { LandingSections } from './Sections'
-import { TennisExperience } from './sport/TennisExperience'
-import type { SportId } from '../../data/types'
 
+// The landing stays light: hero + pillars + CTA. The sport picker (and the immersive courts)
+// lives on its own page, /sport.
 export function LandingPage() {
   useSceneMode('landing')
   const { scrollProgress } = useScene() // shared with the persistent 3D arena background
   const reduced = useReducedMotion()
-
-  // choosing / typing a sport transforms the whole landing into that sport's immersive scene
-  const [activeSport, setActiveSport] = useState<SportId | null>(null)
-  if (activeSport === 'tennis') {
-    return <TennisExperience onExit={() => setActiveSport(null)} />
-  }
 
   return (
     <SmoothScroll>
@@ -30,7 +23,7 @@ export function LandingPage() {
 
       <main style={{ position: 'relative', zIndex: 1 }}>
         <Hero reduced={reduced} />
-        <LandingSections onEnterSport={setActiveSport} />
+        <LandingSections />
       </main>
 
       <Footer />

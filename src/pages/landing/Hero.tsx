@@ -21,6 +21,19 @@ const Sticky = styled.div`
   text-align: center;
 `
 
+// darkens the centre of the bright 3D court so the hero text stays readable over it
+const Scrim = styled.div`
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    58% 52% at 50% 52%,
+    rgba(4, 6, 10, 0.62) 0%,
+    rgba(4, 6, 10, 0.38) 55%,
+    transparent 100%
+  );
+`
+
 // screen-reader / SEO heading (the visible hero title is a decorative morphing word)
 const SrHeading = styled.h1`
   position: absolute;
@@ -34,22 +47,6 @@ const SrHeading = styled.h1`
   border: 0;
 `
 
-const Eyebrow = styled(motion.p)`
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  font-size: ${(p) => p.theme.fontSize.small};
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: ${(p) => p.theme.color.fgMuted};
-  margin: 0 0 18px;
-  padding: 7px 14px;
-  border: 1px solid ${(p) => p.theme.color.line};
-  border-radius: 999px;
-  background: rgba(7, 9, 13, 0.4);
-  backdrop-filter: blur(8px);
-`
-
 const Lead = styled.p`
   font-family: ${(p) => p.theme.font.display};
   font-weight: 700;
@@ -57,7 +54,7 @@ const Lead = styled.p`
   letter-spacing: -0.02em;
   margin: 0;
   color: ${(p) => p.theme.color.fg};
-  text-shadow: 0 2px 24px rgba(0, 0, 0, 0.55);
+  text-shadow: 0 2px 24px rgba(0, 0, 0, 0.75);
 `
 
 // the giant, colour-shifting sport word — the centrepiece, echoing the reference reels
@@ -79,19 +76,19 @@ const Word = styled(motion.span, { shouldForwardProp: (p) => p !== 'c' })<{ c: s
   line-height: 0.9;
   letter-spacing: -0.04em;
   color: ${(p) => p.c};
-  text-shadow: 0 0 60px ${(p) => p.c}55;
+  text-shadow: 0 0 60px ${(p) => p.c}55, 0 4px 30px rgba(0, 0, 0, 0.6);
   white-space: nowrap;
 `
 
-const Sub = styled(motion.p)`
+const Sub = styled.p`
   max-width: 560px;
   margin: 10px auto 0;
   color: ${(p) => p.theme.color.fg};
   font-size: clamp(1rem, 0.9rem + 0.4vw, 1.2rem);
-  text-shadow: 0 2px 20px rgba(0, 0, 0, 0.7);
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.9), 0 2px 20px rgba(0, 0, 0, 0.8);
 `
 
-const Actions = styled(motion.div)`
+const Actions = styled.div`
   display: flex;
   gap: 12px;
   justify-content: center;
@@ -101,19 +98,26 @@ const Actions = styled(motion.div)`
 
 const ScrollHint = styled(motion.div)`
   position: absolute;
-  bottom: 30px;
+  bottom: 22px;
   left: 0;
   right: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 6px;
-  color: ${(p) => p.theme.color.fgFaint};
+  pointer-events: none;
+  color: ${(p) => p.theme.color.fgMuted};
   font-size: ${(p) => p.theme.fontSize.micro};
   letter-spacing: 0.1em;
   text-transform: uppercase;
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.9);
+  /* on short viewports it would sit on top of the CTA buttons */
+  @media (max-height: 640px) {
+    display: none;
+  }
 `
 
+// order must match the balls in MorphingForm: tennis → basket → calcio → volley
 const sportsSeq = [
   { label: 'tennis', color: '#c8ff4d' },
   { label: 'basket', color: '#ff6b3d' },
@@ -121,12 +125,14 @@ const sportsSeq = [
   { label: 'volley', color: '#4f83ff' },
 ] as const
 
-// each word peaks at its segment centre; input ranges stay within [0,1] (Motion/WAAPI requires it)
-const wordRanges: { stops: [number, number, number]; op: [number, number, number] }[] = [
-  { stops: [0, 0.16, 0.32], op: [1, 1, 0] }, // basket — starts full, fades out
-  { stops: [0.17, 0.33, 0.5], op: [0, 1, 0] }, // calcio
-  { stops: [0.5, 0.66, 0.82], op: [0, 1, 0] }, // tennis
-  { stops: [0.68, 0.84, 1], op: [0, 1, 1] }, // volley — holds to the end
+// One word at a time: each word fully fades out BEFORE the next fades in (a small dead gap
+// separates them), so the giant glowing words never pile up on screen. Each word peaks where its
+// ball peaks in the shader (phase = progress * 3 → peaks at 0, 1/3, 2/3, 1).
+const wordRanges: { stops: number[]; op: number[] }[] = [
+  { stops: [0, 0.11, 0.155], op: [1, 1, 0] }, // tennis — starts full, out before basket
+  { stops: [0.179, 0.224, 0.443, 0.488], op: [0, 1, 1, 0] }, // basket — peak ~1/3
+  { stops: [0.512, 0.557, 0.776, 0.821], op: [0, 1, 1, 0] }, // calcio — peak ~2/3
+  { stops: [0.845, 0.89, 1], op: [0, 1, 1] }, // volley — holds to the end
 ]
 
 function WordItem({
@@ -143,8 +149,9 @@ function WordItem({
   reduced: boolean
 }) {
   const { stops, op } = wordRanges[index]
+  const yStops = op.map((o, i) => (o === 0 ? (i === 0 ? 26 : -26) : 0))
   const opacity = useTransform(progress, stops, op)
-  const y = useTransform(progress, stops, [26, 0, -26])
+  const y = useTransform(progress, stops, yStops)
   return (
     <Word c={color} style={{ opacity: reduced ? (index === 0 ? 1 : 0) : opacity, y: reduced ? 0 : y }}>
       {label}
@@ -174,8 +181,9 @@ export function Hero({ reduced }: { reduced: boolean }) {
   return (
     <Track id="scene-track" ref={trackRef}>
       <Sticky>
+        <Scrim aria-hidden="true" />
         <motion.div
-          style={{ opacity: fadeAll }}
+          style={{ opacity: fadeAll, position: 'relative' }}
           onViewportEnter={() => {
             focus.current = 0
           }}
@@ -185,26 +193,25 @@ export function Hero({ reduced }: { reduced: boolean }) {
               Athlon — la piattaforma dello sport italiano: crea la tua società, trova la tua
               squadra, trova sponsor.
             </SrHeading>
-            <Eyebrow {...anim(0)}>
-              <Icon name="sparkle" size={14} /> La piattaforma dello sport italiano
-            </Eyebrow>
-            <Lead>Il tuo posto nel</Lead>
-            <WordStage>
-              {sportsSeq.map((s, i) => (
-                <WordItem
-                  key={s.label}
-                  progress={scrollYProgress}
-                  index={i}
-                  label={s.label}
-                  color={s.color}
-                  reduced={reduced}
-                />
-              ))}
-            </WordStage>
-            <Sub {...anim(0.15)}>
-              {BRAND.claim} Uno spazio unico per atleti e dirigenti — dal campo alla burocrazia.
-            </Sub>
-            <Actions {...anim(0.25)}>
+            <motion.div {...anim(0)}>
+              <Lead>Il tuo posto nel</Lead>
+              <WordStage>
+                {sportsSeq.map((s, i) => (
+                  <WordItem
+                    key={s.label}
+                    progress={scrollYProgress}
+                    index={i}
+                    label={s.label}
+                    color={s.color}
+                    reduced={reduced}
+                  />
+                ))}
+              </WordStage>
+              <Sub>
+                {BRAND.claim} Uno spazio unico per atleti e dirigenti — dal campo alla burocrazia.
+              </Sub>
+            </motion.div>
+            <Actions as={motion.div} {...anim(0.2)}>
               <ButtonLink to="/registrati" variant="energy" size="lg">
                 Inizia gratis <Icon name="arrow-right" size={18} />
               </ButtonLink>

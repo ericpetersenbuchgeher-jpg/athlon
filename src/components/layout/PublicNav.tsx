@@ -2,7 +2,7 @@ import styled from '@emotion/styled'
 import { useEffect, useState } from 'react'
 import { Logo, ButtonLink, Button, Container, Row } from '../ui'
 import { useAuth } from '../../auth/AuthContext'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 const Bar = styled.header<{ scrolled: boolean }>`
   position: fixed;
@@ -60,7 +60,7 @@ export function PublicNav() {
             <a href="/#societa">Società</a>
             <a href="/#squadre">Squadre</a>
             <a href="/#sponsor">Sponsor</a>
-            <a href="/#sport">Sport</a>
+            <Link to="/sport">Sport</Link>
           </Links>
           <Row gap={2}>
             {user ? (

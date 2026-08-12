@@ -1,4 +1,5 @@
 import styled from '@emotion/styled'
+import { Link } from 'react-router-dom'
 import { Container, Logo, Muted } from '../ui'
 import { BRAND } from '../../brand'
 
@@ -68,7 +69,7 @@ export function Footer() {
             <a href="/#societa">Crea una società</a>
             <a href="/#squadre">Trova una squadra</a>
             <a href="/#sponsor">Trova sponsor</a>
-            <a href="/#sport">Sport supportati</a>
+            <Link to="/sport">Tutti gli sport</Link>
           </Col>
           <Col>
             <h4>Risorse</h4>

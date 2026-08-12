@@ -16,8 +16,8 @@ export const theme = {
 
     // text
     fg: '#eef1f7',
-    fgMuted: '#9aa3b2',
-    fgFaint: '#5f6774',
+    fgMuted: '#aeb8c8',
+    fgFaint: '#7d8697',
 
     // brand accents
     accent: '#4f83ff', // azure — identity, links, focus

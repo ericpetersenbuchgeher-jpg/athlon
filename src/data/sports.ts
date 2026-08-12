@@ -38,8 +38,8 @@ export const sportById = (id: SportId): Sport =>
 
 // The four sports the hero morphs through, in order. Names + accent used by the 3D layer poster.
 export const heroSports: { id: SportId; label: string }[] = [
+  { id: 'tennis', label: 'Tennis' },
   { id: 'basket', label: 'Pallacanestro' },
   { id: 'calcio', label: 'Calcio' },
-  { id: 'tennis', label: 'Tennis' },
   { id: 'pallavolo', label: 'Pallavolo' },
 ]
