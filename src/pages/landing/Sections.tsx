@@ -525,6 +525,114 @@ function HowItWorks() {
   )
 }
 
+/* ---------------------------------- Piani ----------------------------------- */
+
+const PlanGrid = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 22px;
+  margin-top: 34px;
+  max-width: 860px;
+  margin-left: auto;
+  margin-right: auto;
+  @media (max-width: 760px) {
+    grid-template-columns: 1fr;
+  }
+`
+const PlanBox = styled(motion.div, { shouldForwardProp: (p) => p !== 'featured' })<{
+  featured?: boolean
+}>`
+  border: 1px solid ${(p) => (p.featured ? 'rgba(200,255,77,0.4)' : p.theme.color.line)};
+  border-radius: ${(p) => p.theme.radius.xl};
+  background: ${(p) =>
+    p.featured
+      ? `radial-gradient(130% 160% at 50% 0%, rgba(200,255,77,0.1), transparent 60%), ${p.theme.color.bg2}`
+      : p.theme.color.bg2};
+  padding: clamp(24px, 4vw, 40px);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  .price {
+    font-family: ${(p) => p.theme.font.display};
+    font-weight: 800;
+    font-size: 2.6rem;
+    letter-spacing: -0.02em;
+    span {
+      font-size: 1rem;
+      color: ${(p) => p.theme.color.fgMuted};
+      font-weight: 500;
+    }
+  }
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 8px;
+    display: grid;
+    gap: 10px;
+    li {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      color: ${(p) => p.theme.color.fg};
+      font-size: ${(p) => p.theme.fontSize.body};
+      .tick {
+        flex: 0 0 auto;
+        margin-top: 2px;
+        color: ${(p) => (p.featured ? '#c8ff4d' : p.theme.color.accent)};
+      }
+    }
+  }
+`
+
+function Pricing() {
+  return (
+    <Section id="piani">
+      <Container>
+        <motion.div {...reveal} style={{ textAlign: 'center' }}>
+          <Eyebrow>Piani</Eyebrow>
+          <H2>Gratis per giocare. Premium per crescere.</H2>
+          <p style={{ color: '#aeb8c8', maxWidth: '52ch', margin: '14px auto 0' }}>
+            Tutto quello che serve per scendere in campo è gratis. Premium toglie i limiti e
+            la burocrazia dalla testa: meno di un caffè a settimana.
+          </p>
+        </motion.div>
+        <PlanGrid>
+          <PlanBox {...reveal}>
+            <strong style={{ fontSize: '1.1rem' }}>Gratis</strong>
+            <div className="price">
+              0 € <span>/ per sempre</span>
+            </div>
+            <ul>
+              <li><span className="tick"><Icon name="check" size={15} /></span>1 squadra e 1 società</li>
+              <li><span className="tick"><Icon name="check" size={15} /></span>3 candidature al mese</li>
+              <li><span className="tick"><Icon name="check" size={15} /></span>Calendario e convocazioni</li>
+              <li><span className="tick"><Icon name="check" size={15} /></span>Scadenze e documenti visibili</li>
+            </ul>
+            <ButtonLink to="/registrati" variant="secondary">
+              Inizia gratis
+            </ButtonLink>
+          </PlanBox>
+          <PlanBox {...reveal} featured>
+            <strong style={{ fontSize: '1.1rem' }}>⭐ Premium</strong>
+            <div className="price">
+              5 € <span>/ mese · disdici quando vuoi</span>
+            </div>
+            <ul>
+              <li><span className="tick"><Icon name="check" size={15} /></span>Squadre, società e candidature illimitate</li>
+              <li><span className="tick"><Icon name="check" size={15} /></span>Avvisi automatici: certificati, quote, affiliazioni</li>
+              <li><span className="tick"><Icon name="check" size={15} /></span>Statistiche presenze e profilo giocatore</li>
+              <li><span className="tick"><Icon name="check" size={15} /></span>Proposte sponsor illimitate + in evidenza</li>
+            </ul>
+            <ButtonLink to="/registrati" variant="energy">
+              Prova Premium <Icon name="arrow-right" size={16} />
+            </ButtonLink>
+          </PlanBox>
+        </PlanGrid>
+      </Container>
+    </Section>
+  )
+}
+
 /* -------------------------------- Final CTA --------------------------------- */
 
 const CtaWrap = styled(motion.div)`
@@ -577,6 +685,7 @@ export function LandingSections() {
     <ContentBackdrop>
       <Pillars />
       <SportTeaser />
+      <Pricing />
       <FinalCTA />
       {/* i 4 passi chiudono la pagina, subito dopo il "Pronto a scendere in campo?" */}
       <HowItWorks />

@@ -14,6 +14,8 @@ import {
 } from '../../components/ui'
 import { EmptyState } from '../../components/domain/common'
 import { TeamCard } from '../../components/domain/TeamCard'
+import { PremiumGate } from '../../components/domain/Premium'
+import { useAuth } from '../../auth/AuthContext'
 import { sports } from '../../data/sports'
 import { teams } from '../../data/teams'
 import type { SportId, TeamLevel } from '../../data/types'
@@ -68,20 +70,29 @@ const levels: { id: TeamLevel; label: string }[] = [
 ]
 
 export function TeamsPage() {
+  const { plan, user } = useAuth()
   const [query, setQuery] = useState('')
   const [sport, setSport] = useState<SportId | null>(null)
   const [level, setLevel] = useState<TeamLevel | null>(null)
+  // filtri Premium
+  const [roleQuery, setRoleQuery] = useState('')
+  const [nearMe, setNearMe] = useState(false)
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase()
+    const rq = plan === 'premium' ? roleQuery.trim().toLowerCase() : ''
     return teams.filter((t) => {
       const matchesQuery =
         !q || t.name.toLowerCase().includes(q) || t.city.toLowerCase().includes(q)
       const matchesSport = !sport || t.sport === sport
       const matchesLevel = !level || t.level === level
-      return matchesQuery && matchesSport && matchesLevel
+      const matchesRole =
+        !rq || t.openRoles.some((r) => r.role.toLowerCase().includes(rq))
+      const matchesNear =
+        !(plan === 'premium' && nearMe) || (user ? t.city === user.city : true)
+      return matchesQuery && matchesSport && matchesLevel && matchesRole && matchesNear
     })
-  }, [query, sport, level])
+  }, [query, sport, level, roleQuery, nearMe, plan, user])
 
   return (
     <div>
@@ -150,6 +161,31 @@ export function TeamsPage() {
             ))}
           </Row>
         </FilterGroup>
+
+        <PremiumGate
+          title="Filtri Premium: cerca per ruolo aperto e vicino a te"
+          hint="Trova solo le squadre che cercano esattamente il tuo ruolo, nella tua città."
+        >
+          <FilterGroup>
+            <span className="group-label">Ruolo & vicinanza (Premium)</span>
+            <Row gap={2} wrap>
+              <Input
+                value={roleQuery}
+                onChange={(e) => setRoleQuery(e.target.value)}
+                placeholder="Ruolo cercato… es. playmaker, portiere"
+                aria-label="Filtra per ruolo aperto"
+                style={{ maxWidth: 320 }}
+              />
+              <ChipButton
+                type="button"
+                active={nearMe}
+                onClick={() => setNearMe((v) => !v)}
+              >
+                📍 Solo nella mia città
+              </ChipButton>
+            </Row>
+          </FilterGroup>
+        </PremiumGate>
       </Filters>
 
       <ResultsHead>

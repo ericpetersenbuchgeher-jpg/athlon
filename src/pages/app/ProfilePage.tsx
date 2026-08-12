@@ -5,6 +5,7 @@ import {
   Card,
   Badge,
   Button,
+  ButtonLink,
   Icon,
   Field,
   Input,
@@ -20,6 +21,7 @@ import {
   PageHeader,
 } from '../../components/ui'
 import { StatCard } from '../../components/domain/common'
+import { PlanBadge } from '../../components/domain/Premium'
 import { useAuth } from '../../auth/AuthContext'
 
 const Name = styled.h2`
@@ -46,7 +48,7 @@ const SectionHead = styled.h2`
 `
 
 export function ProfilePage() {
-  const { user, applications, logout } = useAuth()
+  const { user, applications, logout, plan } = useAuth()
   const navigate = useNavigate()
 
   const [name, setName] = useState(user?.name ?? '')
@@ -112,6 +114,23 @@ export function ProfilePage() {
               ))}
             </Row>
           </div>
+        </Row>
+      </Card>
+
+      <SectionHead>Il tuo piano</SectionHead>
+      <Card pad={5}>
+        <Row justify="space-between" wrap gap={3}>
+          <Row gap={3} align="center">
+            <PlanBadge />
+            <Muted>
+              {plan === 'premium'
+                ? 'Hai tutto sbloccato: avvisi automatici, statistiche e nessun limite.'
+                : 'Piano Gratis: 1 squadra, 3 candidature/mese, scadenze senza avvisi automatici.'}
+            </Muted>
+          </Row>
+          <ButtonLink to="/app/premium" variant={plan === 'premium' ? 'secondary' : 'energy'} size="sm">
+            {plan === 'premium' ? 'Gestisci piano' : 'Passa a Premium — 5 €/mese'}
+          </ButtonLink>
         </Row>
       </Card>
 

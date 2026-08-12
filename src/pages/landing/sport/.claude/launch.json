@@ -6,6 +6,15 @@
       "runtimeExecutable": "npm",
       "runtimeArgs": ["--prefix", "/Users/ericpetersenbuchgeher/Sport App", "run", "dev"],
       "port": 5173
+    },
+    {
+      "name": "brand-board",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "-m", "http.server", "8765",
+        "-d", "/private/tmp/claude-501/-Users-ericpetersenbuchgeher-Sport-App-src-pages-landing-sport/053c1f93-29a6-4991-b86e-2dfeb45c998e/scratchpad"
+      ],
+      "port": 8765
     }
   ]
 }

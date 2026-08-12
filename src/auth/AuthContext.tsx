@@ -6,13 +6,13 @@ import {
   useState,
   type ReactNode,
 } from 'react'
-import type { Application, SportId, User, UserRole } from '../data/types'
+import type { Application, Plan, SportId, User, UserRole } from '../data/types'
 import { seedApplications } from '../data/applications'
 import { teamById } from '../data/teams'
 
 // DEMO auth only — front-end prototype. Any email/password works; the "user" is persisted to
 // localStorage so a refresh keeps you signed in. Swap this provider for a real API later; the
-// surface (user, login, register, logout, applications) is intentionally backend-shaped.
+// surface (user, login, register, logout, applications, plan) is intentionally backend-shaped.
 
 const STORAGE_KEY = 'convocati.auth.v1'
 
@@ -28,6 +28,8 @@ interface RegisterInput {
 interface AuthState {
   user: User | null
   applications: Application[]
+  /** freemium: 'free' di default, 'premium' a 5 €/mese (demo: attivazione simulata) */
+  plan: Plan
 }
 
 interface AuthContextValue extends AuthState {
@@ -36,6 +38,8 @@ interface AuthContextValue extends AuthState {
   logout: () => void
   demoLogin: (role: UserRole) => void
   applyToTeam: (teamId: string, role: string, message: string) => void
+  upgrade: () => void
+  downgrade: () => void
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null)
@@ -82,14 +86,15 @@ const demoUsers: Record<UserRole, User> = {
 }
 
 function loadInitial(): AuthState {
-  const fallback: AuthState = { user: null, applications: seedApplications }
+  const fallback: AuthState = { user: null, applications: seedApplications, plan: 'free' }
   try {
     const raw = localStorage.getItem(STORAGE_KEY)
     if (!raw) return fallback
-    const parsed = JSON.parse(raw) as AuthState
+    const parsed = JSON.parse(raw) as Partial<AuthState>
     return {
       user: parsed.user ?? null,
       applications: parsed.applications?.length ? parsed.applications : seedApplications,
+      plan: parsed.plan === 'premium' ? 'premium' : 'free',
     }
   } catch {
     return fallback
@@ -119,16 +124,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         email,
         initials: initials(nameFromEmail(email)),
       }
-      persist({ user, applications: state.applications })
+      persist({ user, applications: state.applications, plan: state.plan })
     },
-    [persist, state.applications],
+    [persist, state.applications, state.plan],
   )
 
   const demoLogin = useCallback(
     (role: UserRole) => {
-      persist({ user: demoUsers[role], applications: state.applications })
+      persist({ user: demoUsers[role], applications: state.applications, plan: state.plan })
     },
-    [persist, state.applications],
+    [persist, state.applications, state.plan],
   )
 
   const register = useCallback(
@@ -143,14 +148,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         position: input.position,
         initials: initials(input.name),
       }
-      persist({ user, applications: state.applications })
+      persist({ user, applications: state.applications, plan: state.plan })
     },
-    [persist, state.applications],
+    [persist, state.applications, state.plan],
   )
 
   const logout = useCallback(() => {
-    persist({ user: null, applications: state.applications })
-  }, [persist, state.applications])
+    persist({ user: null, applications: state.applications, plan: state.plan })
+  }, [persist, state.applications, state.plan])
 
   const applyToTeam = useCallback(
     (teamId: string, role: string, message: string) => {
@@ -167,14 +172,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const withoutDup = state.applications.filter(
         (a) => !(a.teamId === teamId && (a.status === 'inviata' || a.status === 'in valutazione')),
       )
-      persist({ user: state.user, applications: [app, ...withoutDup] })
+      persist({ user: state.user, applications: [app, ...withoutDup], plan: state.plan })
     },
-    [persist, state.applications, state.user],
+    [persist, state.applications, state.user, state.plan],
   )
 
+  const upgrade = useCallback(() => {
+    persist({ ...state, plan: 'premium' })
+  }, [persist, state])
+
+  const downgrade = useCallback(() => {
+    persist({ ...state, plan: 'free' })
+  }, [persist, state])
+
   const value = useMemo<AuthContextValue>(
-    () => ({ ...state, login, register, logout, demoLogin, applyToTeam }),
-    [state, login, register, logout, demoLogin, applyToTeam],
+    () => ({ ...state, login, register, logout, demoLogin, applyToTeam, upgrade, downgrade }),
+    [state, login, register, logout, demoLogin, applyToTeam, upgrade, downgrade],
   )
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>

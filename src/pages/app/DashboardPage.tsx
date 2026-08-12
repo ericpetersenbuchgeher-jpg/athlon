@@ -13,9 +13,12 @@ import {
 } from '../../components/ui'
 import { StatCard } from '../../components/domain/common'
 import { TeamCard } from '../../components/domain/TeamCard'
+import { UpsellCard } from '../../components/domain/Premium'
 import { useAuth } from '../../auth/AuthContext'
 import { teams, teamById } from '../../data/teams'
 import { associations } from '../../data/associations'
+import { seedEvents, eventKindMeta } from '../../data/events'
+import { seedDeadlines, deadlineStatus, daysTo } from '../../data/deadlines'
 
 const Hero = styled(Card)`
   background:
@@ -112,7 +115,13 @@ export function DashboardPage() {
               accent="#37d17a"
             />
             <StatCard label="Affiliazioni attive" value="3" icon="shield" accent="#ff6b3d" hint="FIP · FIPAV · UISP" />
-            <StatCard label="Scadenze aperte" value="2" icon="calendar" accent="#ffbe4d" hint="Rendiconto · certificati" />
+            <StatCard
+              label="Scadenze aperte"
+              value={seedDeadlines.filter((d) => deadlineStatus(d.due) !== 'ok').length}
+              icon="bell"
+              accent="#ffbe4d"
+              hint="Certificati · quote · affiliazioni"
+            />
           </>
         ) : (
           <>
@@ -128,6 +137,69 @@ export function DashboardPage() {
           </>
         )}
       </Grid>
+
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 16, marginTop: 24 }}>
+        <Card pad={5}>
+          <SectionTitle style={{ margin: '0 0 10px' }}>
+            <h2 style={{ fontSize: '1.05rem' }}>Prossimi impegni</h2>
+            <Link to="/app/calendario">
+              Calendario <Icon name="arrow-right" size={14} />
+            </Link>
+          </SectionTitle>
+          <Stack gap={0}>
+            {seedEvents.slice(0, 3).map((ev) => (
+              <AppRow key={ev.id}>
+                <Icon name="calendar" size={18} style={{ color: eventKindMeta[ev.kind].accent }} />
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <strong>{ev.title}</strong>
+                  <div style={{ color: '#aeb8c8', fontSize: '0.82rem' }}>
+                    {new Date(ev.date).toLocaleDateString('it-IT')} · {ev.time} · {ev.place}
+                  </div>
+                </div>
+                <Badge tone={ev.myRsvp === 'presente' ? 'success' : 'warning'}>
+                  {ev.myRsvp === 'presente' ? 'ci sei' : 'rispondi'}
+                </Badge>
+              </AppRow>
+            ))}
+          </Stack>
+        </Card>
+
+        <Card pad={5}>
+          <SectionTitle style={{ margin: '0 0 10px' }}>
+            <h2 style={{ fontSize: '1.05rem' }}>Scadenze in arrivo</h2>
+            <Link to="/app/scadenze">
+              Tutte <Icon name="arrow-right" size={14} />
+            </Link>
+          </SectionTitle>
+          <Stack gap={0}>
+            {[...seedDeadlines]
+              .sort((a, b) => a.due.localeCompare(b.due))
+              .slice(0, 3)
+              .map((d) => {
+                const st = deadlineStatus(d.due)
+                const days = daysTo(d.due)
+                return (
+                  <AppRow key={d.id}>
+                    <Icon name="bell" size={18} />
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <strong>{d.label}</strong>
+                      <div style={{ color: '#aeb8c8', fontSize: '0.82rem' }}>
+                        {d.entity} · {days < 0 ? `scaduta ${-days} gg fa` : `tra ${days} gg`}
+                      </div>
+                    </div>
+                    <Badge tone={st === 'scaduta' ? 'danger' : st === 'in scadenza' ? 'warning' : 'success'}>
+                      {st}
+                    </Badge>
+                  </AppRow>
+                )
+              })}
+          </Stack>
+        </Card>
+      </div>
+
+      <div style={{ marginTop: 24 }}>
+        <UpsellCard />
+      </div>
 
       <SectionTitle>
         <h2>{isDirigente ? 'Squadre in cerca di giocatori' : 'Squadre per te'}</h2>

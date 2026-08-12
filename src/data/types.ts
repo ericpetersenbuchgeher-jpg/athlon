@@ -120,6 +120,50 @@ export interface Sponsor {
   wants: string[]
 }
 
+/** freemium: Premium costa 5 €/mese */
+export type Plan = 'free' | 'premium'
+
+/* ------------------------- Calendario & convocazioni ------------------------- */
+
+export type EventKind = 'allenamento' | 'partita' | 'riunione'
+
+export type RsvpStatus = 'convocato' | 'presente' | 'assente'
+
+export interface TeamEvent {
+  id: string
+  teamId: string
+  kind: EventKind
+  title: string
+  /** ISO date */
+  date: string
+  time: string
+  place: string
+  /** opponent, only for kind = 'partita' */
+  opponent?: string
+  /** how many members confirmed / called up */
+  confirmed: number
+  called: number
+  /** the signed-in user's reply (demo: local) */
+  myRsvp: RsvpStatus
+}
+
+/* ------------------------------- Scadenzario -------------------------------- */
+
+export type DeadlineKind = 'certificato' | 'affiliazione' | 'assicurazione' | 'quota' | 'rendiconto'
+
+export interface Deadline {
+  id: string
+  kind: DeadlineKind
+  /** what expires, e.g. "Certificato medico — Marco Rinaldi" */
+  label: string
+  /** which team/ASD it belongs to */
+  entity: string
+  /** ISO due date */
+  due: string
+  /** short action hint */
+  hint?: string
+}
+
 export type ApplicationStatus = 'inviata' | 'in valutazione' | 'accettata' | 'rifiutata'
 
 export interface Application {

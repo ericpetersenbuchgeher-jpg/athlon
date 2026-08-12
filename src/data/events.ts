@@ -1,0 +1,90 @@
+import type { TeamEvent } from './types'
+
+// Demo calendar: convocazioni, allenamenti e partite delle squadre dell'utente.
+// Le date sono ad agosto/settembre 2026 così la demo resta "viva".
+export const seedEvents: TeamEvent[] = [
+  {
+    id: 'ev-1',
+    teamId: 't-milano-basket',
+    kind: 'allenamento',
+    title: 'Allenamento — fondamentali e difesa',
+    date: '2026-08-14',
+    time: '19:30',
+    place: 'PalaLambrate, Milano',
+    confirmed: 9,
+    called: 12,
+    myRsvp: 'convocato',
+  },
+  {
+    id: 'ev-2',
+    teamId: 't-milano-basket',
+    kind: 'partita',
+    title: 'Amichevole pre-campionato',
+    date: '2026-08-17',
+    time: '21:00',
+    place: 'PalaIseo, Milano',
+    opponent: 'Virtus Navigli',
+    confirmed: 10,
+    called: 12,
+    myRsvp: 'presente',
+  },
+  {
+    id: 'ev-3',
+    teamId: 't-milano-basket',
+    kind: 'allenamento',
+    title: 'Allenamento — schemi d’attacco',
+    date: '2026-08-21',
+    time: '19:30',
+    place: 'PalaLambrate, Milano',
+    confirmed: 7,
+    called: 12,
+    myRsvp: 'convocato',
+  },
+  {
+    id: 'ev-4',
+    teamId: 't-milano-calcio5',
+    kind: 'partita',
+    title: 'Torneo estivo — semifinale',
+    date: '2026-08-23',
+    time: '18:00',
+    place: 'Centro Sportivo Crespi, Milano',
+    opponent: 'Futsal Isola',
+    confirmed: 8,
+    called: 10,
+    myRsvp: 'convocato',
+  },
+  {
+    id: 'ev-5',
+    teamId: 't-milano-basket',
+    kind: 'riunione',
+    title: 'Riunione squadra — iscrizione campionato UISP',
+    date: '2026-08-28',
+    time: '20:30',
+    place: 'Sede ASD + videochiamata',
+    confirmed: 11,
+    called: 14,
+    myRsvp: 'presente',
+  },
+  {
+    id: 'ev-6',
+    teamId: 't-milano-basket',
+    kind: 'partita',
+    title: 'Campionato — 1ª giornata',
+    date: '2026-09-06',
+    time: '20:45',
+    place: 'PalaLambrate, Milano',
+    opponent: 'Olimpia Lambrate',
+    confirmed: 6,
+    called: 12,
+    myRsvp: 'convocato',
+  },
+]
+
+export const eventKindMeta: Record<
+  TeamEvent['kind'],
+  { label: string; accent: string }
+> = {
+  allenamento: { label: 'Allenamento', accent: '#4f83ff' },
+  partita: { label: 'Partita', accent: '#ff6b3d' },
+  riunione: { label: 'Riunione', accent: '#c8ff4d' },
+}

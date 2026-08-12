@@ -12,6 +12,9 @@ import { ProtectedRoute } from './auth/ProtectedRoute'
 import { AppLayout } from './components/layout/AppLayout'
 
 import { DashboardPage } from './pages/app/DashboardPage'
+import { CalendarPage } from './pages/app/CalendarPage'
+import { DeadlinesPage } from './pages/app/DeadlinesPage'
+import { PremiumPage } from './pages/app/PremiumPage'
 import { TeamsPage } from './pages/app/TeamsPage'
 import { TeamDetailPage } from './pages/app/TeamDetailPage'
 import { CreateTeamPage } from './pages/app/CreateTeamPage'
@@ -49,6 +52,9 @@ export default function App() {
         <Route element={<ProtectedRoute />}>
           <Route path="/app" element={<AppLayout />}>
             <Route index element={<DashboardPage />} />
+            <Route path="calendario" element={<CalendarPage />} />
+            <Route path="scadenze" element={<DeadlinesPage />} />
+            <Route path="premium" element={<PremiumPage />} />
             <Route path="squadre" element={<TeamsPage />} />
             <Route path="squadre/nuova" element={<CreateTeamPage />} />
             <Route path="squadre/:id" element={<TeamDetailPage />} />

@@ -27,10 +27,26 @@ type IconName =
   | 'sparkle'
   | 'calendar'
   | 'euro'
+  | 'lock'
+  | 'crown'
+  | 'clock'
 
 const paths: Record<IconName, ReactElement> = {
   'arrow-right': <path d="M5 12h14M13 6l6 6-6 6" />,
   'arrow-up-right': <path d="M7 17 17 7M8 7h9v9" />,
+  lock: (
+    <>
+      <rect x="5" y="11" width="14" height="9" rx="2" />
+      <path d="M8 11V8a4 4 0 0 1 8 0v3" />
+    </>
+  ),
+  crown: <path d="m4 8 4.5 3.5L12 5l3.5 6.5L20 8l-1.4 9H5.4L4 8Z" />,
+  clock: (
+    <>
+      <circle cx="12" cy="12" r="8.5" />
+      <path d="M12 7.5V12l3 2" />
+    </>
+  ),
   check: <path d="M20 6 9 17l-5-5" />,
   plus: <path d="M12 5v14M5 12h14" />,
   search: (

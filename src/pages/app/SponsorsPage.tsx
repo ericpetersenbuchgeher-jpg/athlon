@@ -15,6 +15,8 @@ import {
 } from '../../components/ui'
 import { EmptyState } from '../../components/domain/common'
 import { SponsorCard } from '../../components/domain/SponsorCard'
+import { UpsellCard } from '../../components/domain/Premium'
+import { useAuth } from '../../auth/AuthContext'
 import { sports } from '../../data/sports'
 import { sponsors } from '../../data/sponsors'
 import type { SportId, SponsorTier } from '../../data/types'
@@ -36,6 +38,7 @@ const tiers: { id: TierFilter; label: string }[] = [
 ]
 
 export function SponsorsPage() {
+  const { plan } = useAuth()
   const [query, setQuery] = useState('')
   const [activeSports, setActiveSports] = useState<SportId[]>([])
   const [tier, setTier] = useState<TierFilter>('tutti')
@@ -71,6 +74,12 @@ export function SponsorsPage() {
           </Muted>
         </div>
       </PageHeader>
+
+      {plan === 'free' && (
+        <div style={{ marginTop: 20 }}>
+          <UpsellCard text="Col piano Gratis puoi inviare 1 proposta al mese (0/1 usata). Con Premium: proposte illimitate e la tua squadra in evidenza per gli sponsor." />
+        </div>
+      )}
 
       <Filters pad={5}>
         <Stack gap={4}>

@@ -23,6 +23,7 @@ const nav: NavGroup[] = [
   {
     section: 'Gioca',
     items: [
+      { to: '/app/calendario', label: 'Calendario', icon: 'calendar' },
       { to: '/app/squadre', label: 'Trova squadre', icon: 'search' },
       { to: '/app/candidature', label: 'Le mie candidature', icon: 'send' },
       { to: '/app/squadre/nuova', label: 'Crea una squadra', icon: 'plus' },
@@ -32,10 +33,17 @@ const nav: NavGroup[] = [
     section: 'Gestisci',
     items: [
       { to: '/app/societa', label: 'Le mie società', icon: 'building' },
+      { to: '/app/scadenze', label: 'Scadenze', icon: 'bell' },
       { to: '/app/sponsor', label: 'Sponsor', icon: 'handshake' },
     ],
   },
-  { section: 'Account', items: [{ to: '/app/profilo', label: 'Profilo', icon: 'user' }] },
+  {
+    section: 'Account',
+    items: [
+      { to: '/app/profilo', label: 'Profilo', icon: 'user' },
+      { to: '/app/premium', label: 'Premium', icon: 'crown' },
+    ],
+  },
 ]
 
 const Shell = styled.div`
