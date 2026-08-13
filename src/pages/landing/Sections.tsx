@@ -685,10 +685,10 @@ export function LandingSections() {
     <ContentBackdrop>
       <Pillars />
       <SportTeaser />
-      <Pricing />
       <FinalCTA />
-      {/* i 4 passi chiudono la pagina, subito dopo il "Pronto a scendere in campo?" */}
       <HowItWorks />
+      {/* i piani stanno DOPO "crea account" e i 4 passi: prima convinci, poi parli di prezzo */}
+      <Pricing />
     </ContentBackdrop>
   )
 }

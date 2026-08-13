@@ -1,6 +1,12 @@
 import styled from '@emotion/styled'
-import { useRef } from 'react'
-import { motion, useScroll, useTransform, type MotionValue } from 'motion/react'
+import { useRef, useState } from 'react'
+import {
+  AnimatePresence,
+  motion,
+  useMotionValueEvent,
+  useScroll,
+  useTransform,
+} from 'motion/react'
 import { ButtonLink, Container, Icon } from '../../components/ui'
 import { BRAND } from '../../brand'
 import { useScene } from '../../canvas/SceneContext'
@@ -125,38 +131,15 @@ const sportsSeq = [
   { label: 'volley', color: '#4f83ff' },
 ] as const
 
-// One word at a time: each word fully fades out BEFORE the next fades in (a small dead gap
-// separates them), so the giant glowing words never pile up on screen. Each word peaks where its
-// ball peaks in the shader (phase = progress * 3 → peaks at 0, 1/3, 2/3, 1).
-const wordRanges: { stops: number[]; op: number[] }[] = [
-  { stops: [0, 0.11, 0.155], op: [1, 1, 0] }, // tennis — starts full, out before basket
-  { stops: [0.179, 0.224, 0.443, 0.488], op: [0, 1, 1, 0] }, // basket — peak ~1/3
-  { stops: [0.512, 0.557, 0.776, 0.821], op: [0, 1, 1, 0] }, // calcio — peak ~2/3
-  { stops: [0.845, 0.89, 1], op: [0, 1, 1] }, // volley — holds to the end
-]
-
-function WordItem({
-  progress,
-  index,
-  label,
-  color,
-  reduced,
-}: {
-  progress: MotionValue<number>
-  index: number
-  label: string
-  color: string
-  reduced: boolean
-}) {
-  const { stops, op } = wordRanges[index]
-  const yStops = op.map((o, i) => (o === 0 ? (i === 0 ? 26 : -26) : 0))
-  const opacity = useTransform(progress, stops, op)
-  const y = useTransform(progress, stops, yStops)
-  return (
-    <Word c={color} style={{ opacity: reduced ? (index === 0 ? 1 : 0) : opacity, y: reduced ? 0 : y }}>
-      {label}
-    </Word>
-  )
+// One word at a time, GUARANTEED: only the active word is mounted in the DOM, and
+// AnimatePresence mode="wait" finishes the exit before the next word enters. The active index
+// follows the ball phases in the shader (peaks at 0, 1/3, 2/3, 1 → segment midpoints at 1/6,
+// 3/6, 5/6). No per-frame opacity maths that a browser can leave half-applied.
+function activeWord(p: number): number {
+  if (p < 1 / 6) return 0
+  if (p < 3 / 6) return 1
+  if (p < 5 / 6) return 2
+  return 3
 }
 
 export function Hero({ reduced }: { reduced: boolean }) {
@@ -165,6 +148,11 @@ export function Hero({ reduced }: { reduced: boolean }) {
   const { scrollYProgress } = useScroll({
     target: trackRef,
     offset: ['start start', 'end end'],
+  })
+
+  const [wordIdx, setWordIdx] = useState(0)
+  useMotionValueEvent(scrollYProgress, 'change', (v) => {
+    setWordIdx(activeWord(v))
   })
 
   const fadeAll = useTransform(scrollYProgress, [0.86, 1], [1, reduced ? 1 : 0])
@@ -196,16 +184,18 @@ export function Hero({ reduced }: { reduced: boolean }) {
             <motion.div {...anim(0)}>
               <Lead>Il tuo posto nel</Lead>
               <WordStage>
-                {sportsSeq.map((s, i) => (
-                  <WordItem
-                    key={s.label}
-                    progress={scrollYProgress}
-                    index={i}
-                    label={s.label}
-                    color={s.color}
-                    reduced={reduced}
-                  />
-                ))}
+                <AnimatePresence mode="wait" initial={false}>
+                  <Word
+                    key={sportsSeq[wordIdx].label}
+                    c={sportsSeq[wordIdx].color}
+                    initial={reduced ? { opacity: 1, y: 0 } : { opacity: 0, y: 26 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={reduced ? { opacity: 0 } : { opacity: 0, y: -26 }}
+                    transition={{ duration: reduced ? 0 : 0.24, ease: 'easeOut' }}
+                  >
+                    {sportsSeq[wordIdx].label}
+                  </Word>
+                </AnimatePresence>
               </WordStage>
               <Sub>
                 {BRAND.claim} Uno spazio unico per atleti e dirigenti — dal campo alla burocrazia.

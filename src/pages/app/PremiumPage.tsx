@@ -1,5 +1,5 @@
 import styled from '@emotion/styled'
-import { Badge, Button, Card, Grid, Icon, Muted, PageHeader, Row } from '../../components/ui'
+import { Badge, Button, ButtonLink, Card, Grid, Icon, Muted, PageHeader, Row } from '../../components/ui'
 import { useAuth } from '../../auth/AuthContext'
 
 // Piani: Gratis vs Premium (5 €/mese). Demo: l'upgrade è simulato (nessun pagamento reale).
@@ -108,10 +108,14 @@ export function PremiumPage() {
               </li>
             ))}
           </ul>
-          {isPro && (
+          {isPro ? (
             <Button variant="ghost" onClick={downgrade}>
               Torna al piano Gratis
             </Button>
+          ) : (
+            <ButtonLink to="/app" variant="secondary">
+              Continua con Gratis
+            </ButtonLink>
           )}
         </PlanCard>
 

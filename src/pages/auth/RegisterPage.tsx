@@ -85,7 +85,8 @@ export function RegisterPage() {
       sports: selected.length ? selected : ['basket'],
       position: role === 'atleta' ? position : undefined,
     })
-    navigate('/app')
+    // subito dopo la registrazione si sceglie il piano (gratis o Premium)
+    navigate('/app/premium')
   }
 
   return (
